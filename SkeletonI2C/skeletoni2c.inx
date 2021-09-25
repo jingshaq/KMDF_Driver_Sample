@@ -1,0 +1,73 @@
+;
+;
+;Copyright (c) Microsoft Corporation.  All rights reserved.
+;
+;Module Name:
+;    skeletoni2c.inf
+;
+;Abstract:
+;    INF file for installing the Driver Frameworks skeletoni2c Driver
+;
+;Installation Notes: 
+;    Using Devcon: Type "devcon update skeletoni2c.inf ACPI\skeletoni2c" to install
+;
+;
+
+[Version]
+Signature="$WINDOWS NT$"
+Class=System
+ClassGuid={4D36E97D-E325-11CE-BFC1-08002BE10318}
+Provider=%ProviderString%
+DriverVer=06/21/2006,6.1.7779.2
+CatalogFile = SpbSamples.cat
+
+[DestinationDirs]
+DefaultDestDir = 12
+
+; ================= Class section =====================
+
+[SourceDisksNames]
+1 = %DiskId1%,,,""
+
+[SourceDisksFiles]
+skeletoni2c.sys  = 1,,
+
+;*****************************************
+; skeletoni2c  Install Section
+;*****************************************
+
+[Manufacturer]
+%StdMfg%=Standard,NT$ARCH$
+
+; Decorated model section take precedence over undecorated 
+; ones on XP and later.
+[Standard.NT$ARCH$]
+%skeletoni2c.DeviceDesc%=skeletoni2c_Device, ACPI\skeletoni2c
+
+[skeletoni2c_Device.NT]
+CopyFiles=Drivers_Dir
+
+[Drivers_Dir]
+skeletoni2c.sys
+
+
+;-------------- Service installation
+[skeletoni2c_Device.NT.Services]
+AddService = skeletoni2c,%SPSVCINST_ASSOCSERVICE%, skeletoni2c_Service_Inst
+
+; -------------- skeletoni2c driver install sections
+[skeletoni2c_Service_Inst]
+DisplayName    = %skeletoni2c.SVCDESC%
+ServiceType    = 1               ; SERVICE_KERNEL_DRIVER
+StartType      = 3               ; SERVICE_DEMAND_START 
+ErrorControl   = 1               ; SERVICE_ERROR_NORMAL
+ServiceBinary  = %12%\skeletoni2c.sys
+Dependencies   = SpbCx
+
+[Strings]
+SPSVCINST_ASSOCSERVICE= 0x00000002
+ProviderString = "TODO-Set-Provider"
+StdMfg = "(Standard system devices)"
+DiskId1 = "Skeleton I2C Controller Installation Disk #1"
+skeletoni2c.DeviceDesc = "Skeleton I2C Controller Driver"
+skeletoni2c.SVCDESC = "Skeleton I2C Controller Service"
