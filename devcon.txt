@@ -1,0 +1,16 @@
+devcon.exe install  MouseLikeTouchPad.inf   Hid\MouseLikeTouchPad
+devcon.exe install  MouseLikeTouchPad.inf   ACPI\PNP0C50
+
+
+devcon.exe install  kmouse_filter.inf   ACPI\PNP0C50
+devcon.exe install  kmouse_filter.inf   Hid\kmouseFilter
+
+devcon.exe install  kmouse_filter.inf   HID_DEVICE_UP:000D_U:0005
+
+devcon.exe install  VhidminiUm.inf root\VhidminiUm
+devcon.exe install  VhidminiUm.inf ACPI\PNP0C50
+devcon.exe install  VhidminiUm.inf HID_DEVICE_UP:000D_U:0005
+
+
+Include = input.inf
+Needs = HID_Raw_Inst.NT.Services
