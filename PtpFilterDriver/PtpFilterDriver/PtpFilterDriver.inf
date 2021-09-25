@@ -1,0 +1,78 @@
+;
+; PtpFilterDriver.inf
+;
+
+[Version]
+Signature="$WINDOWS NT$"
+Class=HIDClass
+ClassGuid={745a17a0-74d3-11d0-b6fe-00a0c90f57da}; HIDClassGuid
+Provider=%ManufacturerName%
+CatalogFile=PtpFilterDriver.cat
+DriverVer=12/26/2016,1.1.0.74
+PnpLockdown=1	
+
+[DestinationDirs]
+DefaultDestDir = 12
+
+; ================= Class section =====================
+
+[SourceDisksNames]
+1 = %DiskName%,,,""
+
+[SourceDisksFiles]
+PtpFilterDriver.sys  = 1,,
+
+;*****************************************
+; Install Section
+;*****************************************
+
+[Manufacturer]
+%ManufacturerName%=Standard,NTamd64
+
+[Standard.NTamd64]
+%PtpFilterDriver.DeviceDesc%=PtpFilterDriver_Device, HID_DEVICE_UP:000D_U:0005 ; PTP Devices
+
+[PtpFilterDriver_Device.NT]
+CopyFiles=Drivers_Dir
+
+[Drivers_Dir]
+PtpFilterDriver.sys
+
+;[PtpFilterDriver_Device.NT.HW]
+;AddReg=PtpFilterDriver_Device.AddReg, PtpFilterDriver_Device_Configuration.AddReg
+
+;[PtpFilterDriver_Device.AddReg]
+;HKR,,"LowerFilters",0x00010008,"PtpFilterDriver"
+
+
+;[PtpFilterDriver_Device_Configuration.AddReg]
+;HKR,,"EnhancedPowerManagementEnabled",0x00010001,1
+;HKR,,"DeviceResetNotificationEnabled",0x00010001,1
+;HKR,,"LegacyTouchScaling",0x00010001,0
+
+
+;-------------- Service installation
+[PtpFilterDriver_Device.NT.Services]
+AddService = PtpFilterDriver,%SPSVCINST_ASSOCSERVICE%, PtpFilterDriver_Service_Inst
+
+; -------------- PtpFilterDriver driver install sections
+[PtpFilterDriver_Service_Inst]
+DisplayName    = %PtpFilterDriver.SVCDESC%
+ServiceType    = 1               ; SERVICE_KERNEL_DRIVER
+StartType      = 3               ; SERVICE_DEMAND_START
+ErrorControl   = 1               ; SERVICE_ERROR_NORMAL
+ServiceBinary  = %12%\PtpFilterDriver.sys
+
+
+[PtpFilterDriver_Device.NT.Wdf]
+KmdfService =  PtpFilterDriver, PtpFilterDriver_wdfsect
+[PtpFilterDriver_wdfsect]
+KmdfLibraryVersion = 1.15
+
+[Strings]
+SPSVCINST_ASSOCSERVICE= 0x00000002
+ManufacturerName="Tobii AB"
+DiskName = "PtpFilterDriver Installation Disk"
+PtpFilterDriver.DeviceDesc = "Tobii Touchpad Filter Driver"
+PtpFilterDriver.SVCDESC = "Tobii Touchpad Filter Driver"
+
