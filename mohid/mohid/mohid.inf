@@ -1,0 +1,124 @@
+[Version]
+Signature="$Windows NT$"
+Class = HIDClass
+ClassGuid = {745a17a0-74d3-11d0-b6fe-00a0c90f57da}
+Provider=%Provider%
+PnpLockDown=1
+DriverVer =12/12/2020,0.1.0.0
+CatalogFile=mohid.cat
+
+[DestinationDirs]
+DefaultDestDir = 12 ; DIRID_DRIVERS
+mohid_CoInstaller_CopyFiles = 11
+
+[ControlFlags]
+; We don't want our device to be installable via the non-PnP hardware dialogs
+ExcludeFromSelect = *
+
+; Manufacturer Section
+; ---------------------------------------------------------
+[Manufacturer]
+%ShinyThings%=ShinyThingsMfg,NT$ARCH$
+
+; Devices Section
+; ---------------------------------------------------------
+[ShinyThingsMfg.NT$ARCH$]
+%mohid.DeviceDesc%=mohid_Device, Hid\MLTP_Filter
+%mohid.DeviceDesc%=mohid_Device,  HID_DEVICE_UP:000D_U:0005
+;%mohid.DeviceDesc%=mohid_Device, ACPI\VEN_MSFT&DEV_0001
+
+%mohid.DeviceDesc%=mohid_Device, ACPI\MSFT0001
+;%mohid.DeviceDesc%=mohid_Device, *MSFT0001
+;%mohid.DeviceDesc%=mohid_Device, ACPI\PNP0C50
+
+; Install Section
+; ---------------------------------------------------------
+[mohid_Device.NT]
+CopyFiles = mohid_CopyFiles.NT
+
+[mohid_Device.NT.HW]
+Include = MSMOUSE.INF
+Needs = HID_Mouse_Inst.NT.Hw
+AddReg = mohid_Device.NT.AddReg
+
+[mohid_Device.NT.AddReg]
+HKR,,"UpperFilters",0x00010000,"mohid"
+
+[mohid_CopyFiles.NT]
+mohid.sys
+
+[mohid_Device.NT.Services]
+Include = MSMOUSE.INF
+Needs = HID_Mouse_Inst.NT.Services
+AddService = mohid, , mohid_Service_Inst
+
+;Include = input.inf
+;Needs = HID_Raw_Inst.NT.Services
+
+[mohid_Service_Inst]
+DisplayName    = %mohid.SvcDesc%
+ServiceType    = 1                  ; SERVICE_KERNEL_DRIVER
+StartType      = 3                  ; SERVICE_DEMAND_START
+ErrorControl   = 1                  ; SERVICE_ERROR_NORMAL
+ServiceBinary  = %12%\mohid.sys
+
+; Source Media Section
+; ---------------------------------------------------------
+[SourceDisksNames]
+1 = %DiskName%
+
+[SourceDisksFiles]
+mohid.sys = 1
+WdfCoInstaller$KMDFCOINSTALLERVERSION$.dll=1 ; make sure the number matches with SourceDisksNames
+
+;
+;--- mohid WDF Coinstaller installation ------
+;
+[mohid.NT.CoInstallers]
+AddReg=mohid_CoInstaller_AddReg
+CopyFiles=mohid_CoInstaller_CopyFiles
+
+[mohid_CoInstaller_AddReg]
+HKR,,CoInstallers32,0x00010000, "WdfCoInstaller$KMDFCOINSTALLERVERSION$.dll,WdfCoInstaller"
+
+[mohid_CoInstaller_CopyFiles]
+WdfCoInstaller$KMDFCOINSTALLERVERSION$.dll
+
+[mohid_Device.NT.Wdf]
+KmdfService = mohid, mohid_wdfsect
+
+[mohid_wdfsect]
+KmdfLibraryVersion = 1.15
+
+
+; Strings Section
+; ---------------------------------------------------------
+[Strings]
+; Provider names
+Provider = "jxleyo"
+
+; Mfg names
+ShinyThings = "mohid Shiny Things"
+
+; HID device IDs
+mohid.DeviceDesc = "mohid Shiny Things mohid Mouse"
+
+; Service names
+mohid.SvcDesc = "mohid Service"
+
+; Media names
+DiskName = "mohid Driver Disk"
+
+
+; Standard defs
+SPSVCINST_TAGTOFRONT  = 0x00000001
+SPSVCINST_ASSOCSERVICE= 0x00000002
+SERVICE_KERNEL_DRIVER = 1
+SERVICE_BOOT_START    = 0
+SERVICE_SYSTEM_START  = 1
+SERVICE_AUTO_START    = 2
+SERVICE_ERROR_NORMAL  = 1
+SERVICE_ERROR_IGNORE  = 0
+REG_EXPAND_SZ         = 0x00020000
+REG_DWORD             = 0x00010001
+REG_SZ                = 0x00000000
