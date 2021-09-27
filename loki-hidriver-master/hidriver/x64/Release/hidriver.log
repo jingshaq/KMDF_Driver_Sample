@@ -1,0 +1,30 @@
+﻿  Building 'hidriver' with toolset 'WindowsKernelModeDriver10.0' and the 'Desktop' target platform.
+  Stamping x64\Release\hidriver.inf
+  Stamping [Version] section with DriverVer=09/24/2021,21.57.31.275
+D:\loki-hidriver-master\hidriver\hidriver.inf(1-1): warning 1324: [Version] section should specify PnpLockdown=1.
+D:\loki-hidriver-master\hidriver\hidriver.inf(53-53): warning 2083: Section [defaultinstall.nt.wdf] not referenced or used.
+D:\loki-hidriver-master\hidriver\hidriver.inf(55-55): warning 2083: Section [kmdflibrary] not referenced or used.
+  driver.c
+  device.c
+  queue_default.c
+  queue_manual.c
+  memory.c
+  正在生成代码...
+  hidriver.vcxproj -> D:\loki-hidriver-master\x64\Release\hidriver.sys
+  Done Adding Additional Store
+  Successfully signed: D:\loki-hidriver-master\x64\Release\hidriver.sys
+  
+  .........................
+  Signability test complete.
+  
+  Errors:
+  None
+  
+  Warnings:
+  None
+  
+  Catalog generation complete.
+  D:\loki-hidriver-master\x64\Release\hidriver\hidriver.cat
+  Done Adding Additional Store
+  Successfully signed: D:\loki-hidriver-master\x64\Release\hidriver\hidriver.cat
+  
