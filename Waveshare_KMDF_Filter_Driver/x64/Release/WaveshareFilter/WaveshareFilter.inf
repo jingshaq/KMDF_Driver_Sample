@@ -1,0 +1,128 @@
+;/*++
+;
+;Copyright (c) 1990-1999 Microsoft Corporation All rights Reserved
+;
+;Module Name:
+;
+;    WaveshareFilter.INF
+;
+;Abstract:
+;    INF file for installing the Waveshare 7" HDMI LCD Touchscreen
+;    hidusb lower filter driver
+;
+;    This INF is based on the toaster filter sample
+;
+;--*/
+
+[Version]
+Signature   = "$WINDOWS NT$"
+Class       = TOASTER
+ClassGuid   = {B85B7C50-6A01-11d2-B841-00C04FAD5171}
+Provider    = %ProviderName%
+DriverVer = 09/24/2021,18.30.22.752
+CatalogFile = WaveshareFilter.cat
+PnpLockdown=1
+
+[DestinationDirs]
+DefaultDestDir = 12
+
+; ================= Class section =====================
+
+[ClassInstall32]
+Addreg=SampleClassReg
+
+[SampleClassReg]
+HKR,,,0,%ClassName%
+HKR,,Icon,,-5
+
+
+
+;*************************
+; Source file information
+;*************************
+
+
+[SourceDisksNames]
+1 = %DiskId1%,,,""
+
+[SourceDisksFiles]
+WaveshareFilter.sys         = 1,,
+
+
+;*****************************************
+; Waveshare Device Filter Install Section
+;*****************************************
+
+[Manufacturer]
+%StdMfg%=Standard,NTamd64
+
+[Standard.NTamd64]
+%WaveshareFilter.DeviceDesc%=WaveshareFilter, ACPI\PNP0C50
+
+;%WaveshareFilter.DeviceDesc%=WaveshareFilter, *ELAN962C
+;%WaveshareFilter.DeviceDesc%=WaveshareFilter, ACPI\ELAN962C
+;%WaveshareFilter.DeviceDesc%=WaveshareFilter, ACPI\VEN_ELAN&DEV_962C
+
+%WaveshareFilter.DeviceDesc%=WaveshareFilter, ACPI\PNP0C51
+%WaveshareFilter.DeviceDesc%=WaveshareFilter, SPI\VID_05ac&PID_0272&MI_02
+%WaveshareFilter.DeviceDesc%=WaveshareFilter, SPI\VID_05ac&PID_0273&MI_02
+%WaveshareFilter.DeviceDesc%=WaveshareFilter, SPI\VID_05ac&PID_0275&MI_02
+%WaveshareFilter.DeviceDesc%=WaveshareFilter, SPI\VID_05ac&PID_0276&MI_02
+%WaveshareFilter.DeviceDesc%=WaveshareFilter, SPI\VID_05ac&PID_0277&MI_02
+%WaveshareFilter.DeviceDesc%=WaveshareFilter, SPI\VID_05ac&PID_0278&MI_02
+%WaveshareFilter.DeviceDesc%=WaveshareFilter, SPI\VID_05ac&PID_0279&MI_02
+%WaveshareFilter.DeviceDesc%=WaveshareFilter, SPI\VID_05ac&PID_0280&MI_02
+%WaveshareFilter.DeviceDesc%=WaveshareFilter, SPI\VID_05ac&PID_0290&MI_02
+%WaveshareFilter.DeviceDesc%=WaveshareFilter, SPI\VID_05ac&PID_0291&MI_02
+
+[WaveshareFilter.NT]
+Include = INPUT.INF
+Needs = HID_Inst.NT
+CopyFiles=WaveshareFilter.NT.Copy
+
+[WaveshareFilter.NT.Copy]
+WaveshareFilter.sys
+
+[WaveshareFilter.NT.HW]
+Include = INPUT.INF
+Needs = HID_Inst.NT.HW
+AddReg = WaveshareFilter.NT.HW.AddReg
+
+
+[WaveshareFilter.NT.HW.AddReg]
+HKR,,"LowerFilters",0x00010000,"WaveshareFilter"
+
+;*****************************************
+; Waveshare Device Filter Service Section
+;*****************************************
+
+[WaveshareFilter.NT.Services]
+;Do not specify SPSVCINST_ASSOCSERVICE on filter drivers.
+AddService      = WaveshareFilter,, filter_Service_Inst
+Include = INPUT.INF
+Needs = HID_Inst.NT.services
+
+[filter_Service_Inst]
+DisplayName     = %filter.SvcDesc%
+ServiceType     = 1                  ; SERVICE_KERNEL_DRIVER
+StartType       = 3                  ; SERVICE_DEMAND_START
+ErrorControl    = 1                  ; SERVICE_ERROR_NORMAL
+ServiceBinary   = %12%\WaveshareFilter.sys
+
+
+
+
+[WaveshareFilter.NT.Wdf]
+KmdfService              = WaveshareFilter, Filter_wdfsect
+
+[Filter_wdfsect]
+KmdfLibraryVersion = 1.9
+
+[Strings]
+SPSVCINST_ASSOCSERVICE   = 0x00000002
+ProviderName             = "TODO-Set-Provider"
+StdMfg                   = "(Standard system devices)"
+ClassName                = "Waveshare"
+DiskId1                  = "Waveshare Filter Installation Disk #1"
+WaveshareFilter.DeviceDesc = "Waveshare Touchscreen Filter"
+filter.SvcDesc           = "Waveshare Filter Driver"
